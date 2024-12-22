@@ -1,10 +1,9 @@
-# from django.db import models
-# from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.utils import timezone
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+import pytz  # To use timezones
 
-
-# # Create your models here.
-
-
+# # Custom User Manager
 # class CustomUserManager(BaseUserManager):
 #     def create_user(self, email, password=None, **extra_fields):
 #         """
@@ -18,6 +17,21 @@
 #         user.save(using=self._db)
 #         return user
 
+#     def create_superuser(self, email, password=None, **extra_fields):
+#         """
+#         Creates and returns a superuser with an email and password.
+#         """
+#         extra_fields.setdefault('is_staff', True)
+#         extra_fields.setdefault('is_superuser', True)
+        
+#         if extra_fields.get('is_staff') is not True:
+#             raise ValueError('Superuser must have is_staff=True.')
+#         if extra_fields.get('is_superuser') is not True:
+#             raise ValueError('Superuser must have is_superuser=True.')
+
+#         return self.create_user(email, password, **extra_fields)
+
+# # User model
 # class User(AbstractBaseUser):
 #     GENDER_CHOICES = [
 #         ('Male', 'Male'),
@@ -32,16 +46,17 @@
 #         ('Very Active', 'Hard exercise or sports 6-7 days per week'),
 #     ]
 
-#     # Define the fields
 #     email = models.EmailField(unique=True)
 #     password = models.CharField(max_length=255)  # Store password (hashed later)
 #     name = models.CharField(max_length=50)
-#     age = models.PositiveIntegerField()  # Age should be an integer between 10 and 100
-#     weight = models.PositiveIntegerField()  # Weight should be a number between 20 and 200
-#     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-#     activity_level = models.CharField(max_length=20, choices=ACTIVITY_LEVEL_CHOICES)
+
+#     # These fields should be optional for superusers
+#     age = models.PositiveIntegerField(null=True, blank=True)  # Optional for superusers
+#     weight = models.PositiveIntegerField(null=True, blank=True)  # Optional for superusers
+#     height = models.PositiveIntegerField(null=True, blank=True)  # New height field
+#     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)  # Optional for superusers
+#     activity_level = models.CharField(max_length=20, choices=ACTIVITY_LEVEL_CHOICES, null=True, blank=True)  # Optional for superusers
     
-#     # Optional: Add date of registration
 #     registration_date = models.DateTimeField(auto_now_add=True)
 
 #     # Fields inherited from AbstractBaseUser
@@ -53,24 +68,22 @@
 #     # Add related_name to avoid reverse access issues
 #     groups = models.ManyToManyField(
 #         'auth.Group',
-#         related_name='accounts_user_set',  # Added related_name
+#         related_name='accounts_user_set',
 #         blank=True,
 #         help_text='The groups this user belongs to.',
 #         verbose_name='groups'
 #     )
 #     user_permissions = models.ManyToManyField(
 #         'auth.Permission',
-#         related_name='accounts_user_permissions_set',  # Added related_name
+#         related_name='accounts_user_permissions_set',
 #         blank=True,
 #         help_text='Specific permissions for this user.',
 #         verbose_name='user permissions'
 #     )
 
-#     # Specify email as the username field for authentication
 #     USERNAME_FIELD = 'email'
 #     REQUIRED_FIELDS = ['name']  # Add any other fields you want to be mandatory
 
-#     # Custom manager for handling user creation
 #     objects = CustomUserManager()
 
 #     def __str__(self):
@@ -78,23 +91,16 @@
 
 #     # Custom validation for age and weight
 #     def clean(self):
-#         if self.age < 10 or self.age > 100:
+#         if self.age and (self.age < 10 or self.age > 100):
 #             raise models.ValidationError("Age must be between 10 and 100.")
-#         if self.weight < 20 or self.weight > 200:
-#             raise models.ValidationError("Weight must be between 20 and 200 kg.")
+#         if self.weight and (self.weight < 20 or self.weight > 200):
+#             raise models.ValidationError("Weight must be between 20 and 200 kg.") 
+#         if self.height and (self.height < 50 or self.height > 250):
+#             raise models.ValidationError("Height must be between 50 and 250 cm.")
 #         super().clean()  # Call parent clean() method
- 
- 
- 
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-# Custom User Manager
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
-        """
-        Creates and returns a regular user with an email and password.
-        """
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
@@ -104,12 +110,9 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        """
-        Creates and returns a superuser with an email and password.
-        """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        
+
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
@@ -117,14 +120,13 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
-# User model
 class User(AbstractBaseUser):
     GENDER_CHOICES = [
         ('Male', 'Male'),
         ('Female', 'Female'),
         ('Other', 'Other'),
     ]
-    
+
     ACTIVITY_LEVEL_CHOICES = [
         ('Sedentary', 'Little or no exercise, sitting most of the day'),
         ('Lightly Active', 'Light exercise or sports 1-3 days per week'),
@@ -136,21 +138,18 @@ class User(AbstractBaseUser):
     password = models.CharField(max_length=255)  # Store password (hashed later)
     name = models.CharField(max_length=50)
 
-    # These fields should be optional for superusers
-    age = models.PositiveIntegerField(null=True, blank=True)  # Optional for superusers
-    weight = models.PositiveIntegerField(null=True, blank=True)  # Optional for superusers
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)  # Optional for superusers
-    activity_level = models.CharField(max_length=20, choices=ACTIVITY_LEVEL_CHOICES, null=True, blank=True)  # Optional for superusers
-    
-    registration_date = models.DateTimeField(auto_now_add=True)
+    age = models.PositiveIntegerField(null=True, blank=True)
+    weight = models.PositiveIntegerField(null=True, blank=True)
+    height = models.PositiveIntegerField(null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, null=True, blank=True)
+    activity_level = models.CharField(max_length=20, choices=ACTIVITY_LEVEL_CHOICES, null=True, blank=True)
 
-    # Fields inherited from AbstractBaseUser
+    registration_date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     last_login = models.DateTimeField(auto_now=True)
 
-    # Add related_name to avoid reverse access issues
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='accounts_user_set',
@@ -167,24 +166,29 @@ class User(AbstractBaseUser):
     )
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']  # Add any other fields you want to be mandatory
+    REQUIRED_FIELDS = ['name']
 
     objects = CustomUserManager()
 
     def __str__(self):
         return f'{self.name} ({self.email})'
 
-    # Custom validation for age and weight
     def clean(self):
         if self.age and (self.age < 10 or self.age > 100):
             raise models.ValidationError("Age must be between 10 and 100.")
         if self.weight and (self.weight < 20 or self.weight > 200):
             raise models.ValidationError("Weight must be between 20 and 200 kg.")
-        super().clean()  # Call parent clean() method
+        if self.height and (self.height < 50 or self.height > 250):
+            raise models.ValidationError("Height must be between 50 and 250 cm.")
+        super().clean()
 
+    def has_perm(self, perm, obj=None):
+        return True
 
+    def has_module_perms(self, app_label):
+        return True
 
-#for Analyzed data 
+# Nutrition Analysis Model
 class NutritionAnalysis(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     food_name = models.CharField(max_length=255)
@@ -200,3 +204,15 @@ class NutritionAnalysis(models.Model):
 
     def __str__(self):
         return f"{self.food_name} - {self.user.name}"
+
+    # Class method to get today's data for a user
+    @classmethod
+    def get_today_data(cls, user):
+        # Convert timezone-aware datetime to 'Asia/Kolkata' timezone
+        kolkata_tz = pytz.timezone('Asia/Kolkata')
+        today_start = timezone.now().astimezone(kolkata_tz).replace(hour=0, minute=0, second=0, microsecond=0)  # Midnight start of today
+        today_end = today_start.replace(hour=23, minute=59, second=59, microsecond=999999)  # End of the day (just before midnight)
+
+        # Fetch records for today within the range (ignoring the time portion)
+        return cls.objects.filter(user=user, analyzed_at__gte=today_start, analyzed_at__lt=today_end)
+

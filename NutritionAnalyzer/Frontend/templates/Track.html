@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% comment %} {% extends 'base.html' %}
+
+{% block title %}Track Your Nutrition{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <h2>Track Your Nutrition for Today</h2>
+        <table id="nutritionDataTable" class="table table-bordered table-striped mt-4">
+            <thead class="thead-light">
+                <tr>
+                    <th>Food</th>
+                    <th>Calories</th>
+                    <th>Protein (g)</th>
+                    <th>Carbs (g)</th>
+                    <th>Fat (g)</th>
+                    <th>Fiber (g)</th>
+                    <th>Sugars (g)</th>
+                    <th>Sodium (mg)</th>
+                    <th>Cholesterol (mg)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Nutrition data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        body {
+            background-color: #add8e6; /* Light blue background */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #3CB371; /* Medium sea green text */
+            margin-bottom: 20px; /* Spacing below the header */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px; /* Padding inside the container */
+        }
+
+        #nutritionDataTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #nutritionDataTable th, #nutritionDataTable td {
+            padding: 15px; /* Adds padding inside the cells */
+            text-align: center;
+        }
+
+        #nutritionDataTable th {
+            background-color: #3CB371; /* Table header background */
+            color: white;
+            font-size: 1.1em; /* Slightly larger text for the headers */
+        }
+
+        #nutritionDataTable tbody tr:nth-child(odd) {
+            background-color: #f2f2f2; /* Alternate row background */
+        }
+
+        #nutritionDataTable tbody tr:hover {
+            background-color: #d1e7dd; /* Highlight row on hover */
+        }
+
+        #nutritionDataTable td {
+            font-size: 0.95em; /* Slightly smaller font size for the table data */
+        }
+
+        /* Extra padding around the table container */
+        .container h2, .container table {
+            margin-bottom: 30px;
+        }
+
+        /* Add spacing around the entire page */
+        body {
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+    </style>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // Fetch nutrition data as soon as the page is loaded
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Make AJAX request to fetch today's nutrition data
+                let response = await axios.get('/fetch_nutrition_data/');
+                console.log("Response:", response);
+                // Log the response data to the console
+                console.log("Response data:", response.data);
+
+                if (response.data.success) {
+                    const nutritionData = response.data.nutrition_data;
+                    const nutritionTableBody = document.querySelector("#nutritionDataTable tbody");
+                    nutritionTableBody.innerHTML = ''; // Clear the existing data
+
+                    // Insert new rows into the table
+                    nutritionData.forEach(entry => {
+                        const row = `
+                            <tr>
+                                <td>${entry.food_name}</td>
+                                <td>${entry.calories}</td>
+                                <td>${entry.protein}</td>
+                                <td>${entry.carbs}</td>
+                                <td>${entry.fat}</td>
+                                <td>${entry.fiber}</td>
+                                <td>${entry.sugars}</td>
+                                <td>${entry.sodium}</td>
+                                <td>${entry.cholesterol}</td>
+                            </tr>
+                        `;
+                        nutritionTableBody.insertAdjacentHTML("beforeend", row);
+                    });
+                } else {
+                    alert('Error fetching data: ' + response.data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching nutrition data:', error);
+                alert('An error occurred while fetching the nutrition data.');
+            }
+        });
+    </script>
+{% endblock %} {% endcomment %}
+
+
+
+{% block title %}Track Your Nutrition{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Track Your Nutrition for Today</h2>
+
+    <!-- Daily Calorie Summary Section -->
+    <div class="card bg-light mb-4">
+        <div class="card-body">
+            <h4 class="card-title text-center text-success">Daily Calorie Summary</h4>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <h5>Daily Calorie Requirement</h5>
+                    <p id="dailyCalorieRequirement">--</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Calories Consumed</h5>
+                    <p id="caloriesConsumed">--</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Remaining Calories</h5>
+                    <p id="remainingCalories">--</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nutrition Table Section -->
+    <table id="nutritionDataTable" class="table table-bordered table-striped mt-4">
+        <thead class="thead-light">
+            <tr>
+                <th>Food</th>
+                <th>Calories</th>
+                <th>Protein (g)</th>
+                <th>Carbs (g)</th>
+                <th>Fat (g)</th>
+                <th>Fiber (g)</th>
+                <th>Sugars (g)</th>
+                <th>Sodium (mg)</th>
+                <th>Cholesterol (mg)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Nutrition data will be inserted here -->
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #add8e6; /* Light blue background */
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        text-align: center;
+        color: #3CB371;
+    }
+
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #nutritionDataTable {
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        try {
+            // Fetch today's nutrition data
+            let response = await axios.get('/fetch_nutrition_data/');
+            console.log("Response:", response);
+
+            if (response.data.success) {
+                const data = response.data;
+                const { 
+                    daily_calorie_requirement, 
+                    total_calories_consumed, 
+                    remaining_calories, 
+                    nutrition_data 
+                } = data;
+
+                // Update the daily calorie summary
+                document.getElementById('dailyCalorieRequirement').innerText = daily_calorie_requirement.toFixed(2);
+                document.getElementById('caloriesConsumed').innerText = total_calories_consumed.toFixed(2);
+                document.getElementById('remainingCalories').innerText = remaining_calories.toFixed(2);
+
+                // Update the nutrition table
+                const nutritionTableBody = document.querySelector("#nutritionDataTable tbody");
+                nutritionTableBody.innerHTML = '';
+                nutrition_data.forEach(entry => {
+                    const row = `
+                        <tr>
+                            <td>${entry.food_name}</td>
+                            <td>${entry.calories}</td>
+                            <td>${entry.protein}</td>
+                            <td>${entry.carbs}</td>
+                            <td>${entry.fat}</td>
+                            <td>${entry.fiber}</td>
+                            <td>${entry.sugars}</td>
+                            <td>${entry.sodium}</td>
+                            <td>${entry.cholesterol}</td>
+                        </tr>
+                    `;
+                    nutritionTableBody.insertAdjacentHTML("beforeend", row);
+                });
+            } else {
+                alert('Error: ' + response.data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while fetching the data.');
+        }
+    });
+</script>
+{% endblock %}

@@ -47,11 +47,15 @@ if (registrationForm){
     confirmPasswordError = document.getElementById('confirmPasswordError');
 
     // Get the value of age input
-    age = document.getElementById("age");
-     ageError = document.getElementById("ageError"); 
+        age = document.getElementById("age");
+        ageError = document.getElementById("ageError"); 
+        
+        const weight = document.getElementById("weight");
+        const weightError = document.getElementById("weightError");
 
-     const weight = document.getElementById("weight");
-     const weightError = document.getElementById("weightError");
+        const height = document.getElementById("height");
+        const heightError = document.getElementById("heightError");
+
 
 
     registrationForm.addEventListener("submit", function(event) {
@@ -145,6 +149,16 @@ if (registrationForm){
               event.preventDefault();
           }
 
+          // Validate Height
+        const heightValue = height.value.trim();
+        heightError.textContent = "";
+        if (heightValue === "") {
+            heightError.textContent = "Height is required.";
+            event.preventDefault();
+        } else if (isNaN(heightValue) || heightValue < 50 || heightValue > 250) {
+            heightError.textContent = "Height must be a number between 50 and 250 cm.";
+            event.preventDefault();
+        }
         
        
     

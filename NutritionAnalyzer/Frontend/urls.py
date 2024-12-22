@@ -37,4 +37,6 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),      # Login page
     path('logout/', views.logout_view, name='logout'),   # Logout page
     path('save_nutrition/', views.save_nutrition_data, name='save_nutrition_data'), 
+    path('fetch_nutrition_data/', views.fetch_nutrition_data, name='fetch_nutrition_data'),
 ]
+

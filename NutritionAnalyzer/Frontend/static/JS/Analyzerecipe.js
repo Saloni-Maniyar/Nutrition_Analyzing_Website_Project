@@ -93,8 +93,72 @@ async function fetchFoodId(food) {
 }
 
 // Function to fetch nutrition data
-async function fetchNutritionData(id,food_Entered) {
-    console.log("parameter 2 food user entered:",food_Entered)
+// async function fetchNutritionData(id,food_Entered) {
+//     console.log("parameter 2 food user entered:",food_Entered)
+//     console.log("In fetch nutrition");
+//     console.log("ID =", id);
+
+//     if (!id) {
+//         console.log("Invalid food ID. Cannot fetch nutrition data.");
+//         showErrorMessage("No data found for the entered food item.");
+//         return;
+//     }
+
+//     try {
+//         const baseurl = "https://api.spoonacular.com/recipes";
+//         const url = `${baseurl}/${id}/information/?apiKey=${api_key}&includeNutrition=true`;
+//         let response = await axios.get(url);
+//         console.log("Recipe API =", response);
+//         const nutritionData = response.data.nutrition;
+
+//         console.log("Nutrition Data:", nutritionData);
+
+//         // Calculate the nutritional values for one serving
+//         const servings = response.data.servings || 1; // Default to 1 serving if not specified
+//         const caloriesPerServing = nutritionData.nutrients.find(n => n.name === "Calories")?.amount / servings || 0;
+//         const proteinPerServing = nutritionData.nutrients.find(n => n.name === "Protein")?.amount / servings || 0;
+//         const carbsPerServing = nutritionData.nutrients.find(n => n.name === "Carbohydrates")?.amount / servings || 0;
+//         const fatPerServing = nutritionData.nutrients.find(n => n.name === "Fat")?.amount / servings || 0;
+//         const fiberPerServing = nutritionData.nutrients.find(n => n.name === "Fiber")?.amount / servings || 0;
+//         const sugarsPerServing = nutritionData.nutrients.find(n => n.name === "Sugar")?.amount / servings || 0;
+//         const sodiumPerServing = nutritionData.nutrients.find(n => n.name === "Sodium")?.amount / servings || 0;
+//         const cholesterolPerServing = nutritionData.nutrients.find(n => n.name === "Cholesterol")?.amount / servings || 0;
+
+//         // Call the function to render the chart
+//         await renderNutritionChart(
+//             caloriesPerServing,
+//             proteinPerServing,
+//             carbsPerServing,
+//             fatPerServing,
+//             fiberPerServing,
+//             sugarsPerServing,
+//             sodiumPerServing,
+//             cholesterolPerServing
+//         );
+//         console.log("Nutrition data rendered successfully!");
+//         const food_name = response.data.title;  // Get the name of the food item
+//         console.log("Food Name:", food_name);
+//         console.log("food user enterd:",food_Entered)
+//         await saveNutritionDataToDatabase(food_Entered, {
+//             calories: caloriesPerServing,
+//             protein: proteinPerServing,
+//             carbs: carbsPerServing,
+//             fat: fatPerServing,
+//             fiber: fiberPerServing,
+//             sugars: sugarsPerServing,
+//             sodium: sodiumPerServing,
+//             cholesterol: cholesterolPerServing
+//         }); 
+//         console.log("Nutrition data saved to the database!");
+       
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         showErrorMessage("Unable to fetch nutrition data. Please try again later.");
+//     }
+// }
+// Function to fetch nutrition data
+async function fetchNutritionData(id, food_Entered) {
+    console.log("parameter 2 food user entered:", food_Entered);
     console.log("In fetch nutrition");
     console.log("ID =", id);
 
@@ -115,14 +179,16 @@ async function fetchNutritionData(id,food_Entered) {
 
         // Calculate the nutritional values for one serving
         const servings = response.data.servings || 1; // Default to 1 serving if not specified
-        const caloriesPerServing = nutritionData.nutrients.find(n => n.name === "Calories")?.amount / servings || 0;
-        const proteinPerServing = nutritionData.nutrients.find(n => n.name === "Protein")?.amount / servings || 0;
-        const carbsPerServing = nutritionData.nutrients.find(n => n.name === "Carbohydrates")?.amount / servings || 0;
-        const fatPerServing = nutritionData.nutrients.find(n => n.name === "Fat")?.amount / servings || 0;
-        const fiberPerServing = nutritionData.nutrients.find(n => n.name === "Fiber")?.amount / servings || 0;
-        const sugarsPerServing = nutritionData.nutrients.find(n => n.name === "Sugar")?.amount / servings || 0;
-        const sodiumPerServing = nutritionData.nutrients.find(n => n.name === "Sodium")?.amount / servings || 0;
-        const cholesterolPerServing = nutritionData.nutrients.find(n => n.name === "Cholesterol")?.amount / servings || 0;
+        const truncateToTwo = (num) => Math.floor(num * 100) / 100; // Helper function to truncate to 2 decimal places
+
+        const caloriesPerServing = truncateToTwo(nutritionData.nutrients.find(n => n.name === "Calories")?.amount / servings || 0);
+        const proteinPerServing = truncateToTwo(nutritionData.nutrients.find(n => n.name === "Protein")?.amount / servings || 0);
+        const carbsPerServing = truncateToTwo(nutritionData.nutrients.find(n => n.name === "Carbohydrates")?.amount / servings || 0);
+        const fatPerServing = truncateToTwo(nutritionData.nutrients.find(n => n.name === "Fat")?.amount / servings || 0);
+        const fiberPerServing = truncateToTwo(nutritionData.nutrients.find(n => n.name === "Fiber")?.amount / servings || 0);
+        const sugarsPerServing = truncateToTwo(nutritionData.nutrients.find(n => n.name === "Sugar")?.amount / servings || 0);
+        const sodiumPerServing = truncateToTwo(nutritionData.nutrients.find(n => n.name === "Sodium")?.amount / servings || 0);
+        const cholesterolPerServing = truncateToTwo(nutritionData.nutrients.find(n => n.name === "Cholesterol")?.amount / servings || 0);
 
         // Call the function to render the chart
         await renderNutritionChart(
@@ -136,9 +202,11 @@ async function fetchNutritionData(id,food_Entered) {
             cholesterolPerServing
         );
         console.log("Nutrition data rendered successfully!");
-        const food_name = response.data.title;  // Get the name of the food item
+
+        const food_name = response.data.title; // Get the name of the food item
         console.log("Food Name:", food_name);
-        console.log("food user enterd:",food_Entered)
+        console.log("food user entered:", food_Entered);
+
         await saveNutritionDataToDatabase(food_Entered, {
             calories: caloriesPerServing,
             protein: proteinPerServing,
@@ -148,9 +216,9 @@ async function fetchNutritionData(id,food_Entered) {
             sugars: sugarsPerServing,
             sodium: sodiumPerServing,
             cholesterol: cholesterolPerServing
-        }); 
+        });
         console.log("Nutrition data saved to the database!");
-       
+
     } catch (error) {
         console.error("Error fetching data:", error);
         showErrorMessage("Unable to fetch nutrition data. Please try again later.");

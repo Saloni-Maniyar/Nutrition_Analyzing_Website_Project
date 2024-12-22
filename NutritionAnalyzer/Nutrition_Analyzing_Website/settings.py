@@ -87,7 +87,7 @@ DATABASES = {
         'HOST':'localhost',
         'PORT':'3306', 
         
-    }
+    } 
 }
 
 
@@ -150,4 +150,6 @@ MEDIA_ROOT = BASE_DIR / 'media'  # Physical location for uploaded files
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 
