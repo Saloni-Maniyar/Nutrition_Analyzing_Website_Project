@@ -17,6 +17,12 @@ from django.utils import timezone
 def home(request):
     return render(request, 'index.html')
 
+# Define the About Us view
+def about(request):
+    return render(request, 'about.html') 
+
+def contact(request):
+    return render(request, 'contact.html')
 
 @login_required
 def profile(request):

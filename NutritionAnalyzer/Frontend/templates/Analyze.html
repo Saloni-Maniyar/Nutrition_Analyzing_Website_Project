@@ -6,8 +6,8 @@
 <div class="container-fluid d-flex flex-column vh-100">
     <!-- Input Section -->
     <div class="row mb-4">
-        <div class="col-md-12 mt-5">
-            <h2 class="text-center mb-3">Food Analyzer and Exercise Recommendation</h2>
+        <div class="col-md-12 mt-5 ">
+            <h2 class="text-center mb-3">Food Analyzer  <!-- and Exercise Recommendation --> </h2>
             <form id="foodForm" class="d-flex justify-content-center">
                 {% csrf_token %} <!-- Corrected CSRF Token -->
                 <input type="text" class="form-control w-50" id="foodInput" placeholder="Enter food item" required>
@@ -17,9 +17,9 @@
     </div>
 
     <!-- Result Sections -->
-    <div class="row d-flex">
+    <div class="row d-flex mb-2">
         <!-- Nutritional Info -->
-        <div class="col-md-6">
+        <div class="col-md-9">
             <div class="card p-4 d-none" id="nutritionCard">
                 <h4 class="card-title text-center">Nutritional Information</h4>
                 <div id="nutritionResult">
@@ -29,14 +29,14 @@
         </div>
 
         <!-- Exercise Recommendation -->
-        <div class="col-md-6">
+        {% comment %} <div class="col-md-6">
             <div class="card p-4 d-none">
                 <h4 class="card-title text-center">Recommended Exercises</h4>
                 <div id="exerciseResult">
                     <!-- Recommended exercises based on MET values will appear here -->
                 </div>
             </div>
-        </div>
+        </div> {% endcomment %}
     </div>
 </div>
 {% endblock %}

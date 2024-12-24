@@ -30,6 +30,9 @@ from . import views
 urlpatterns = [
     
     path('', views.home, name='home'),
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
+
     path('analyze/', views.analyze, name='analyze'),
     path('track/', views.track, name='track'),
     path('profile/', views.profile, name='profile'),
