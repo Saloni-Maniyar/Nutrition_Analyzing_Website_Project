@@ -3,14 +3,23 @@
 const api_key = '2a60e0e9342048258e5f38b358b758fa';
 const foodForm = document.getElementById("foodForm");
 
-// Function to render the chart
- async function renderNutritionChart(calories, protein, carbs, fat, fiber, sugars, sodium, cholesterol) {
+async function renderNutritionChart(calories, protein, carbs, fat, fiber, sugars, sodium, cholesterol) {
     console.log("In renderNutritionChart");
     let nutritionResultDiv = document.querySelector("#nutritionResult");
     nutritionResultDiv.parentElement.classList.remove("d-none");
 
-    const ctx = document.getElementById('NutritionChart').getContext('2d');
-    
+    const canvasElement = document.getElementById('NutritionChart');
+    if (!canvasElement) {
+        console.error("Canvas element with ID 'NutritionChart' not found.");
+        return;
+    }
+
+    const ctx = canvasElement.getContext('2d');
+    if (!ctx) {
+        console.error("Unable to get canvas context for 'NutritionChart'.");
+        return;
+    }
+
     // Destroy existing chart if it exists
     if (window.nutritionChart) {
         window.nutritionChart.destroy();
@@ -32,9 +41,26 @@ const foodForm = document.getElementById("foodForm");
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "Amount"
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: "Nutritional Components"
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
                 }
             }
         }
