@@ -1,26 +1,4 @@
-// async function fetchNutritionData(ingredient){
-//     const app_id="23dc4d59";
-//     const app_key="78b5134354914931a5b6b22a03a79452";
-//     // let baseurl="https://api.edamam.com/api/nutrition-data";
-//     let baseurl="https://api.spoonacular.com/recipes/analyze";
-    
-//     const url = `${baseurl}?app_id=${app_id}&app_key=${app_key}&nutrition-type=logging&ingr=${encodeURIComponent(ingredient)}`;
-//     try {
-//         const config={
-//             headers: {
-//                 "accept": "application/json"
-//               }
-//         };
-//         const response=await axios.get(url,config);
-//         console.log(response);
-//     } catch (error) {
-//         console.log("No Data Found");
-//         console.error(error);
-//     }
-// }
 
-
-// fetchNutritionData("rice 50gram");
 
 // REGISTRATION FORM VALIDATIONS
 // Email validation pattern (basic email format)
