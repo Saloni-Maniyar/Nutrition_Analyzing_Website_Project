@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Analyze Nutrients{% endblock %}
+
+{% block content %}
+<div class="container-fluid d-flex flex-column vh-100">
+    <!-- Input Section -->
+    <div class="row mb-4">
+        <div class="col-md-12 mt-5 ">
+            <h2 class="text-center mb-3">Food Analyzer  <!-- and Exercise Recommendation --> </h2>
+            <form id="foodForm" class="d-flex justify-content-center">
+                {% csrf_token %} <!-- Corrected CSRF Token -->
+                <input type="text" class="form-control w-50" id="foodInput" placeholder="Enter food item" required>
+                <button type="submit" class="btn btn-primary ms-2" style="background-color:#3CB371;color:#fff">Analyze</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Result Sections -->
+    <div class="row d-flex mb-2">
+        <!-- Nutritional Info -->
+        <div class="col-md-12">
+            <div class="card p-4 d-none" id="nutritionCard" >
+                <h4 class="card-title text-center">Nutritional Information</h4>
+                <div id="nutritionResult">
+                    <canvas id="NutritionChart" style="max-height: 300px; max-width: 80%;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exercise Recommendation -->
+        {% comment %} <div class="col-md-6">
+            <div class="card p-4 d-none">
+                <h4 class="card-title text-center">Recommended Exercises</h4>
+                <div id="exerciseResult">
+                    <!-- Recommended exercises based on MET values will appear here -->
+                </div>
+            </div>
+        </div> {% endcomment %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+<script src="{% static 'JS/Analyzerecipe.js' %}"></script> <!-- Correct use of static -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
