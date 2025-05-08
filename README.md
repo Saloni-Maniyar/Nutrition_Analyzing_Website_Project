@@ -103,10 +103,10 @@ Nutrition_Project_Update/
    ```
 
 3. **Install dependencies**
-
+<!-- 
    ```bash
    pip install -r requirements.txt
-   ```
+   ``` -->
 
 4. **Configure MySQL Database**
 
